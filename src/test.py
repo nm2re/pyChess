@@ -1,50 +1,54 @@
 import pygame
 
-class GridWithCoordinates:
-    def __init__(self, screen, rows, cols, square_size, colors):
-        self.screen = screen
-        self.rows = rows
-        self.cols = cols
-        self.square_size = square_size
-        self.colors = colors
-        self.font = pygame.font.Font(None, 24)  # Default font, size 24
+class Constants:
+    ROWS = 8
+    COLS = 8
+    SQUARE_SIZE = 50  # Size of each square
 
-    def draw_grid(self):
-        for row in range(self.rows):
-            for col in range(self.cols):
-                # Draw the square
-                color = self.colors[(row + col) % 2]
-                rect = (self.square_size * col, self.square_size * row, self.square_size, self.square_size)
-                pygame.draw.rect(self.screen, color, rect)
-
-                # Write the coordinates inside the square
-                coordinates = f"({row},{col})"
-                text = self.font.render(coordinates, True, (0, 0, 0))  # Black text
-                text_rect = text.get_rect(center=(self.square_size * col + self.square_size // 2,
-                                                  self.square_size * row + self.square_size // 2))
-                self.screen.blit(text, text_rect)
-
-# Example usage
+# Initialize Pygame
 pygame.init()
-screen = pygame.display.set_mode((400, 400))
-pygame.display.set_caption("Grid with Coordinates")
-clock = pygame.time.Clock()
 
-rows, cols = 8, 8
-square_size = 50
-colors = [(255, 255, 255), (100, 100, 100)]  # Light and dark squares
+# Constants
+WIDTH = Constants.COLS * Constants.SQUARE_SIZE
+HEIGHT = Constants.ROWS * Constants.SQUARE_SIZE
+colors = [(255, 255, 255), (0, 0, 0)]  # Alternating white and black squares
 
-grid = GridWithCoordinates(screen, rows, cols, square_size, colors)
+# Create the screen
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Chessboard with Row and Column Numbers")
 
+# Set up font
+font = pygame.font.Font(None, 24)  # Default font, size 24
+
+# Draw the board
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    screen.fill((0, 0, 0))  # Clear the screen with black
-    grid.draw_grid()
-    pygame.display.flip()
-    clock.tick(60)
+    # Clear the screen
+    screen.fill((0, 0, 0))
 
+    # Draw squares and add text
+    for row in range(Constants.ROWS):
+        for col in range(Constants.COLS):
+            # Draw the square
+            rect = pygame.Rect(
+                Constants.SQUARE_SIZE * col,
+                Constants.SQUARE_SIZE * row,
+                Constants.SQUARE_SIZE,
+                Constants.SQUARE_SIZE
+            )
+            pygame.draw.rect(screen, colors[(row + col) % 2], rect)
+
+            # Render the row and col text
+            text = font.render(f"{row},{col}", True, (255, 0, 0))  # Red text
+            text_rect = text.get_rect(center=rect.center)  # Center text in the square
+            screen.blit(text, text_rect)
+
+    # Update the display
+    pygame.display.flip()
+
+# Quit Pygame
 pygame.quit()

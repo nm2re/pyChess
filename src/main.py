@@ -7,12 +7,11 @@ class Board:
     def __init__(self):
 
         pygame.init()
-        self.screen = pygame.display.set_mode((SIZE,SIZE))
+        self.screen = pygame.display.set_mode((Constants.SIZE,Constants.SIZE))
         self.clock = pygame.time.Clock()
         self.running = True
         self.dt = 0
 
-        self.square_size = SIZE//8
         self.grid = {} # Dictionary to store pieces on the board (position -> piece)
 
 
@@ -27,13 +26,23 @@ class Board:
 
 
     # TODO: - Finish this function
-    def draw_all_pieces(self, piece_images):
+    def draw_all_pieces(self, screen, piece_images):
         """
         Create and place all the pieces, then draw them on the board.
         """
         # Drawing all pieces on the board
-        for img in piece_images:
-            return
+        # screen.blit(img, (0,0))
+
+
+
+        img = pygame.transform.scale(piece_images["white-pawn"].convert_alpha(),(Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
+
+        for row in range(Constants.ROWS):
+            for col in range(Constants.COLS):
+                screen.blit(img,(row*Constants.SQUARE_SIZE,col*Constants.SQUARE_SIZE))
+
+
+
 
 
 
@@ -59,32 +68,32 @@ class Board:
         return piece is not None and piece.color != color
 
 
-    def makeBoard(self):
+    def make_board(self):
         """
         Makes board along with pieces
         :return:
         """
         colors = ['white','black']
         piece_images = {
-            'white-pawn': pygame.image.load('pieces-images/white-pawn.png'),
-            'black-pawn': pygame.image.load('pieces-images/black-pawn.png'),
-            'white-rook': pygame.image.load('pieces-images/white-rook.png'),
-            'black-rook': pygame.image.load('pieces-images/black-rook.png'),
-            'white-knight': pygame.image.load('pieces-images/white-knight.png'),
-            'black-knight': pygame.image.load('pieces-images/black-knight.png'),
-            'white-bishop': pygame.image.load('pieces-images/white-bishop.png'),
-            'black-bishop': pygame.image.load('pieces-images/black-bishop.png'),
-            'white-queen': pygame.image.load('pieces-images/white-queen.png'),
-            'black-queen': pygame.image.load('pieces-images/black-queen.png'),
-            'white-king': pygame.image.load('pieces-images/white-king.png'),
-            'black-king': pygame.image.load('pieces-images/black-king.png'),
+            'white-pawn': pygame.image.load('../pieces-images/white-pawn.png'),
+            'black-pawn': pygame.image.load('../pieces-images/black-pawn.png'),
+            'white-rook': pygame.image.load('../pieces-images/white-rook.png'),
+            'black-rook': pygame.image.load('../pieces-images/black-rook.png'),
+            'white-knight': pygame.image.load('../pieces-images/white-knight.png'),
+            'black-knight': pygame.image.load('../pieces-images/black-knight.png'),
+            'white-bishop': pygame.image.load('../pieces-images/white-bishop.png'),
+            'black-bishop': pygame.image.load('../pieces-images/black-bishop.png'),
+            'white-queen': pygame.image.load('../pieces-images/white-queen.png'),
+            'black-queen': pygame.image.load('../pieces-images/black-queen.png'),
+            'white-king': pygame.image.load('../pieces-images/white-king.png'),
+            'black-king': pygame.image.load('../pieces-images/black-king.png'),
         }
 
-        for row in range(rows):
-            for col in range(cols):
-                pygame.draw.rect(self.screen,colors[(row+col) % 2],(self.square_size*row,self.square_size*col, self.square_size,self.square_size))
+        for row in range(Constants.ROWS):
+            for col in range(Constants.COLS):
+                pygame.draw.rect(self.screen,colors[(row+col) % 2],(Constants.SQUARE_SIZE*row,Constants.SQUARE_SIZE*col, Constants.SQUARE_SIZE,Constants.SQUARE_SIZE))
 
-                self.draw_all_pieces(piece_images)
+        # self.draw_all_pieces(self.screen,piece_images)
 
 
 
@@ -99,7 +108,7 @@ class Board:
         :return:
         """
 
-        self.makeBoard()
+        self.make_board()
         # Board creation
         while self.running:
             for self.event in pygame.event.get():

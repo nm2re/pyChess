@@ -2,7 +2,9 @@
 
 class Constants:
     SIZE = 800
-    rows = 8
-    cols = 8
+    SQUARE_SIZE = 800//8
+
+    ROWS = 8
+    COLS = 8
 
 
