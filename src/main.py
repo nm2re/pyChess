@@ -22,7 +22,6 @@ class Board:
         Place a piece on the board
         :return:
         """
-        self.grid[piece.position] = piece
 
 
     # TODO: - Finish this function
@@ -31,8 +30,6 @@ class Board:
         Create and place all the piece, then draw them on the board.
         In the loop which builds the board, the parameters take inverted rows and columns.
         """
-        # Drawing all pieces on the board
-        # screen.blit(img, (0,0))
 
         whitePawn_img = pygame.transform.scale(p_images["white-pawn"].convert_alpha(),(Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
         blackPawn_img = pygame.transform.scale(p_images["black-pawn"].convert_alpha(),(Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
@@ -52,7 +49,6 @@ class Board:
 
         whiteKing_img = pygame.transform.scale(p_images["white-king"].convert_alpha(), (Constants.SQUARE_SIZE,Constants.SQUARE_SIZE))
         blackKing_img = pygame.transform.scale(p_images["black-king"].convert_alpha(), (Constants.SQUARE_SIZE,Constants.SQUARE_SIZE))
-
 
 
 
@@ -116,7 +112,6 @@ class Board:
         :return:
         """
 
-
         colors = ['white','black']
         colors[0] = pygame.Color(118,149,88)
         colors[1] = pygame.Color(239,237,111)
@@ -141,8 +136,6 @@ class Board:
                 pygame.draw.rect(self.screen,colors[(row+col) % 2],(Constants.SQUARE_SIZE*row,Constants.SQUARE_SIZE*col, Constants.SQUARE_SIZE,Constants.SQUARE_SIZE))
 
         self.draw_all_pieces(self.screen,piece_images)
-
-
         # Displays board
         pygame.display.flip()
 
