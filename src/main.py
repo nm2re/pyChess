@@ -2,6 +2,7 @@
 import pygame
 from constants import *
 from pieces import *
+from Pawn import *
 
 class Board:
     def __init__(self):
@@ -23,87 +24,112 @@ class Board:
         :return:
         """
 
+    def initialize_pieces(self):
+        """
+        Initialize the board with all pieces in their starting positions.
+        """
+        # Place pawns
+        for col in range(Constants.COLS):
+            self.place_piece(Pawn(color='black', position=(1, col)))
+            self.place_piece(Pawn(color='white', position=(6, col)))
+
+        # Place rooks
+        self.place_piece(Rook(color='black', position=(0, 0)))
+        self.place_piece(Rook(color='black', position=(0, 7)))
+        self.place_piece(Rook(color='white', position=(7, 0)))
+        self.place_piece(Rook(color='white', position=(7, 7)))
+
+        # Place knights
+        self.place_piece(Knight(color='black', position=(0, 1)))
+        self.place_piece(Knight(color='black', position=(0, 6)))
+        self.place_piece(Knight(color='white', position=(7, 1)))
+        self.place_piece(Knight(color='white', position=(7, 6)))
+
+        # Place bishops
+        self.place_piece(Bishop(color='black', position=(0, 2)))
+        self.place_piece(Bishop(color='black', position=(0, 5)))
+        self.place_piece(Bishop(color='white', position=(7, 2)))
+        self.place_piece(Bishop(color='white', position=(7, 5)))
+
+        # Place queens
+        self.place_piece(Queen(color='black', position=(0, 3)))
+        self.place_piece(Queen(color='white', position=(7, 3)))
+
+        # Place kings
+        self.place_piece(King(color='black', position=(0, 4)))
+        self.place_piece(King(color='white', position=(7, 4)))
 
     # TODO: - Finish this function
-    def draw_all_pieces(self, screen, p_images):
-        """
-        Create and place all the piece, then draw them on the board.
-        In the loop which builds the board, the parameters take inverted rows and columns.
-        """
-
-        whitePawn_img = pygame.transform.scale(p_images["white-pawn"].convert_alpha(),(Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
-        blackPawn_img = pygame.transform.scale(p_images["black-pawn"].convert_alpha(),(Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
-
-        whiteRook_img = pygame.transform.scale(p_images["white-rook"].convert_alpha(),(Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
-        blackRook_img = pygame.transform.scale(p_images["black-rook"].convert_alpha(), (Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
-
-        blackBishop_img = pygame.transform.scale(p_images["black-bishop"].convert_alpha(), (Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
-        whiteBishop_img = pygame.transform.scale(p_images["white-bishop"].convert_alpha(), (Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
-
-
-        blackKnight_img = pygame.transform.scale(p_images["black-knight"].convert_alpha(), (Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
-        whiteKnight_img = pygame.transform.scale(p_images["white-knight"].convert_alpha(), (Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
-
-        whiteQueen_img = pygame.transform.scale(p_images["white-queen"].convert_alpha(), (Constants.SQUARE_SIZE,Constants.SQUARE_SIZE))
-        blackQueen_img = pygame.transform.scale(p_images["black-queen"].convert_alpha(), (Constants.SQUARE_SIZE,Constants.SQUARE_SIZE))
-
-        whiteKing_img = pygame.transform.scale(p_images["white-king"].convert_alpha(), (Constants.SQUARE_SIZE,Constants.SQUARE_SIZE))
-        blackKing_img = pygame.transform.scale(p_images["black-king"].convert_alpha(), (Constants.SQUARE_SIZE,Constants.SQUARE_SIZE))
-
-
-
-        for row in range(Constants.ROWS):
-            for col in range(Constants.COLS):
-                screen.blit(blackPawn_img,(row*Constants.SQUARE_SIZE,1*Constants.SQUARE_SIZE))
-                screen.blit(whitePawn_img,(row*Constants.SQUARE_SIZE,6*Constants.SQUARE_SIZE))
-
-                screen.blit(whiteRook_img,(0*Constants.SQUARE_SIZE,7*Constants.SQUARE_SIZE))
-                screen.blit(whiteRook_img,(7*Constants.SQUARE_SIZE,7*Constants.SQUARE_SIZE))
-                screen.blit(blackRook_img,(0*Constants.SQUARE_SIZE,0*Constants.SQUARE_SIZE))
-                screen.blit(blackRook_img,(7*Constants.SQUARE_SIZE,0*Constants.SQUARE_SIZE))
-
-                screen.blit(whiteBishop_img, (2 * Constants.SQUARE_SIZE, 7 * Constants.SQUARE_SIZE))
-                screen.blit(whiteBishop_img, (5 * Constants.SQUARE_SIZE, 7 * Constants.SQUARE_SIZE))
-                screen.blit(blackBishop_img, (5 * Constants.SQUARE_SIZE, 0 * Constants.SQUARE_SIZE))
-                screen.blit(blackBishop_img, (2 * Constants.SQUARE_SIZE, 0 * Constants.SQUARE_SIZE))
-
-
-                screen.blit(whiteKnight_img, (1 * Constants.SQUARE_SIZE, 7 * Constants.SQUARE_SIZE))
-                screen.blit(whiteKnight_img, (6 * Constants.SQUARE_SIZE, 7 * Constants.SQUARE_SIZE))
-                screen.blit(blackKnight_img, (6 * Constants.SQUARE_SIZE, 0 * Constants.SQUARE_SIZE))
-                screen.blit(blackKnight_img, (1 * Constants.SQUARE_SIZE, 0 * Constants.SQUARE_SIZE))
-
-                # Queen
-                screen.blit(whiteQueen_img, (3 * Constants.SQUARE_SIZE, 7 * Constants.SQUARE_SIZE))
-                screen.blit(blackQueen_img, (3 * Constants.SQUARE_SIZE, 0 * Constants.SQUARE_SIZE))
-
-                # King
-                screen.blit(whiteKing_img, (4 * Constants.SQUARE_SIZE, 7 * Constants.SQUARE_SIZE))
-                screen.blit(blackKing_img, (4 * Constants.SQUARE_SIZE, 0 * Constants.SQUARE_SIZE))
-
-
+    # def draw_all_pieces(self, screen, p_images):
+    #     """
+    #     Create and place all the piece, then draw them on the board.
+    #     In the loop which builds the board, the parameters take inverted rows and columns.
+    #     """
+    #
+    #     whitePawn_img = pygame.transform.scale(p_images["white-pawn"].convert_alpha(),(Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
+    #     blackPawn_img = pygame.transform.scale(p_images["black-pawn"].convert_alpha(),(Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
+    #
+    #     whiteRook_img = pygame.transform.scale(p_images["white-rook"].convert_alpha(),(Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
+    #     blackRook_img = pygame.transform.scale(p_images["black-rook"].convert_alpha(), (Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
+    #
+    #     blackBishop_img = pygame.transform.scale(p_images["black-bishop"].convert_alpha(), (Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
+    #     whiteBishop_img = pygame.transform.scale(p_images["white-bishop"].convert_alpha(), (Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
+    #
+    #
+    #     blackKnight_img = pygame.transform.scale(p_images["black-knight"].convert_alpha(), (Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
+    #     whiteKnight_img = pygame.transform.scale(p_images["white-knight"].convert_alpha(), (Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
+    #
+    #     whiteQueen_img = pygame.transform.scale(p_images["white-queen"].convert_alpha(), (Constants.SQUARE_SIZE,Constants.SQUARE_SIZE))
+    #     blackQueen_img = pygame.transform.scale(p_images["black-queen"].convert_alpha(), (Constants.SQUARE_SIZE,Constants.SQUARE_SIZE))
+    #
+    #     whiteKing_img = pygame.transform.scale(p_images["white-king"].convert_alpha(), (Constants.SQUARE_SIZE,Constants.SQUARE_SIZE))
+    #     blackKing_img = pygame.transform.scale(p_images["black-king"].convert_alpha(), (Constants.SQUARE_SIZE,Constants.SQUARE_SIZE))
+    #
+    #
+    #
+    #     for row in range(Constants.ROWS):
+    #         for col in range(Constants.COLS):
+    #             screen.blit(blackPawn_img,(row*Constants.SQUARE_SIZE,1*Constants.SQUARE_SIZE))
+    #             screen.blit(whitePawn_img,(row*Constants.SQUARE_SIZE,6*Constants.SQUARE_SIZE))
+    #
+    #             screen.blit(whiteRook_img,(0*Constants.SQUARE_SIZE,7*Constants.SQUARE_SIZE))
+    #             screen.blit(whiteRook_img,(7*Constants.SQUARE_SIZE,7*Constants.SQUARE_SIZE))
+    #             screen.blit(blackRook_img,(0*Constants.SQUARE_SIZE,0*Constants.SQUARE_SIZE))
+    #             screen.blit(blackRook_img,(7*Constants.SQUARE_SIZE,0*Constants.SQUARE_SIZE))
+    #
+    #             screen.blit(whiteBishop_img, (2 * Constants.SQUARE_SIZE, 7 * Constants.SQUARE_SIZE))
+    #             screen.blit(whiteBishop_img, (5 * Constants.SQUARE_SIZE, 7 * Constants.SQUARE_SIZE))
+    #             screen.blit(blackBishop_img, (5 * Constants.SQUARE_SIZE, 0 * Constants.SQUARE_SIZE))
+    #             screen.blit(blackBishop_img, (2 * Constants.SQUARE_SIZE, 0 * Constants.SQUARE_SIZE))
+    #
+    #
+    #             screen.blit(whiteKnight_img, (1 * Constants.SQUARE_SIZE, 7 * Constants.SQUARE_SIZE))
+    #             screen.blit(whiteKnight_img, (6 * Constants.SQUARE_SIZE, 7 * Constants.SQUARE_SIZE))
+    #             screen.blit(blackKnight_img, (6 * Constants.SQUARE_SIZE, 0 * Constants.SQUARE_SIZE))
+    #             screen.blit(blackKnight_img, (1 * Constants.SQUARE_SIZE, 0 * Constants.SQUARE_SIZE))
+    #
+    #             # Queen
+    #             screen.blit(whiteQueen_img, (3 * Constants.SQUARE_SIZE, 7 * Constants.SQUARE_SIZE))
+    #             screen.blit(blackQueen_img, (3 * Constants.SQUARE_SIZE, 0 * Constants.SQUARE_SIZE))
+    #
+    #             # King
+    #             screen.blit(whiteKing_img, (4 * Constants.SQUARE_SIZE, 7 * Constants.SQUARE_SIZE))
+    #             screen.blit(blackKing_img, (4 * Constants.SQUARE_SIZE, 0 * Constants.SQUARE_SIZE))
 
 
-    def remove_piece(self, piece):
+
+
+    def remove_piece(self, position):
         """
         Remove a piece from the board notably when captured or promoted
-        :param piece:
+        :param position:
         :return:
         """
+        if position in self.grid:
+            return self.grid.pop(position) # Remove piece in the position provided
+        else:
+            return None
 
-
-    def is_enemy_piece(self, position,color):
-        """
-        Checks if a piece at the given position is an enemy piece.
-        :param position: Tuple (x, y) - The position to check.
-        :param color: The color of the current piece ('white' or 'black').
-        :return: True if the position contains an enemy piece, False otherwise.
-        """
-
-        piece = self.grid[position]
-
-        # returns true if piece is different color from current piece
-        return piece is not None and piece.color != color
 
 
     def make_board(self):
