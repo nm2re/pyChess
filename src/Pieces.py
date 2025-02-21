@@ -12,15 +12,13 @@ class Piece:
 
     def possible_moves(self,board):
         """
-        Where the piece can move preferably a list
+         -- Class to be inherited by the individual pieces --
 
-        Class to be inherited by the individual pieces
-        :return:
+        Where the piece can move preferably a list
         """
 
 
     def can_capture(self):
-
         """
         If a piece can capture another piece
 
@@ -29,13 +27,18 @@ class Piece:
         """
 
 
-    def move(self, new_position, board):
+    def move_piece(self, new_position, board):
         """
         Method to move a piece from initial coordinate to new_position
         """
+        if new_position not in self.possible_moves(board):
+            raise ValueError('Invalid move for this piece')
 
-        if new_position in self.possible_moves(board):
-            self.position = new_position
+            # Remove the piece from its current position
+        board.remove_piece(self.position)
+
+        self.position = new_position
+        board.place_piece(self)
 
 
     def is_enemy_piece(self, position,color):
@@ -47,10 +50,14 @@ class Piece:
         """
 
 
+    @staticmethod
+    def remove_piece(self,position, board):
+        """
+        Used to remove a piece from its initial position on the board.
 
+        -> Captures of Pieces
+        -> Movement of normal pieces from one position to another
+        """
 
-
-
-
-
+        return board.grid.pop(position, None)
 

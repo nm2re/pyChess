@@ -1,7 +1,6 @@
 # Example file showing a circle moving on screen
 import pygame
 from constants import *
-from pieces import *
 from Pawn import Pawn
 from Rook import Rook
 from Bishop import Bishop
@@ -25,7 +24,6 @@ class Board:
     def place_piece(self,piece):
         """
         Place a piece on the board
-        :return:
         """
         if piece.position in self.grid:
             raise ValueError(f"Piece {piece.position} already placed")
@@ -172,7 +170,7 @@ class Board:
                             print(f"Pawn can capture: {selected_piece.can_capture()}")
                             print(f"Pawn possible moves: {selected_piece.possible_moves(self)}")
                         ############### DEBUGGING ##############
-
+                    print(selected_piece)
 
 
                     # if selected_piece is None:
@@ -186,7 +184,6 @@ class Board:
                     #         selected_piece.move((row, col), self)
                     #         self.place_piece(selected_piece)
                     #     selected_piece = None  # Deselect the piece
-                    print(selected_piece)
 
             # Redraw the board and pieces
 

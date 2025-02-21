@@ -1,5 +1,3 @@
-
-
 class Constants:
     SIZE = 800
     SQUARE_SIZE = 800//8
