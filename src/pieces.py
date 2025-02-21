@@ -1,5 +1,3 @@
-import pygame
-
 class Piece:
     """
     Base class for all pieces
@@ -15,6 +13,8 @@ class Piece:
     def possible_moves(self,board):
         """
         Where the piece can move preferably a list
+
+        Class to be inherited by the individual pieces
         :return:
         """
 
@@ -23,15 +23,17 @@ class Piece:
 
         """
         If a piece can capture another piece
+
+        Class to be inherited by the individual pieces
         :return:
         """
 
 
     def move(self, new_position, board):
         """
-        Where the move is made
-        :return:
+        Method to move a piece from initial coordinate to new_position
         """
+
         if new_position in self.possible_moves(board):
             self.position = new_position
 
@@ -43,6 +45,8 @@ class Piece:
         :param color: The color of the current piece ('white' or 'black').
         :return: True if the position contains an enemy piece, False otherwise.
         """
+
+
 
 
 
