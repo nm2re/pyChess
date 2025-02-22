@@ -1,8 +1,8 @@
 from Pieces import Piece
 
 class Pawn(Piece):
-    def __init__(self, color, position):
-        super().__init__(color,position)
+    def __init__(self, color, position,image_path):
+        super().__init__(color,position,image_path)
         self.starting_position = position
 
 
@@ -15,10 +15,29 @@ class Pawn(Piece):
         return self.starting_position != self.position
 
 
-    # def can_capture(self):
-    #     """
-    #     Will return boolean if the piece can capture a piece or not
-    #     """
+############### REDUNDANT  #############
+    def can_capture(self, board):
+        """
+        List of positions which the Pawn can capture
+        Checks all the forward diagonals of the piece
+        """
+        capture_positions = []
+
+
+        x,y = self.position
+        forward = -1 if self.color == 'white' else 1
+
+
+        # checking diagonals for captures for pawn
+        left_diag = (x + forward, y - 1)
+        if left_diag in board.grid and board.grid[left_diag].color != self.color:
+            capture_positions.append(left_diag)
+
+        # Diagonal right capture
+        right_diag = (x + forward, y + 1)
+        if right_diag in board.grid and board.grid[right_diag].color != self.color:
+            capture_positions.append(right_diag)
+        return capture_positions
 
 
 
@@ -44,15 +63,23 @@ class Pawn(Piece):
 
         # Diagonal movement for captures only
 
-        print(board.grid[self.position].color)
+        # print(board.grid[self.position].color)
         for dx in [-1, 1]: # checking diagonals left and right
             diagonal = (x + forward, y + dx)
 
             if (diagonal in board.grid) and board.grid[diagonal].color != self.color:  # board.grid[diagonal] --> Piece on that coordinate
                 moves.append(diagonal)
-
         return moves
 
+    # check for enpassant
+
+    def check_enpassant(self):
+        """
+        Initial enpassant manoeuvre of Pawn for enpassnat checkingk
+        :return:
+        """
+
+        ## if opponent piece has done two step -->
 
 
 

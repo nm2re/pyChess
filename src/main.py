@@ -1,6 +1,7 @@
 # Example file showing a circle moving on screen
 import pygame
 from constants import *
+from Pieces import Piece
 from Pawn import Pawn
 from Rook import Rook
 from Bishop import Bishop
@@ -20,10 +21,9 @@ class Board:
         self.grid = {} # Dictionary to store pieces on the board (position -> piece)
 
 
-
-    def place_piece(self,piece):
+    def place_piece(self, piece):
         """
-        Place a piece on the board
+        Place a piece on the board.
         """
         if piece.position in self.grid:
             raise ValueError(f"Piece {piece.position} already placed")
@@ -31,167 +31,154 @@ class Board:
 
 
 
+    def remove_piece(self, position):
+        """
+        Remove a piece from the board when captured or moved.
+        """
+        return self.grid.pop(position, None)  # Remove and return the piece if it exists
+
+
+
+    def move_piece(self, new_position, piece):
+        """
+        Moves a piece from its current position to a new position.
+        Includes capturing opponent pieces.
+        Incorporates place_piece() and remove_piece() methods
+        """
+
+        if new_position not in piece.possible_moves(self):
+            raise ValueError('Invalid move for this piece')
+
+        captured_piece = self.remove_piece(new_position)  # Remove any enemy piece at new_position
+
+        self.remove_piece(piece.position)
+        piece.position = new_position
+        self.place_piece(piece)
+
+        return captured_piece  # Return captured piece (if any)
+
     def initialize_pieces(self):
         """
         Initialize the board with all pieces in their starting positions.
         """
         # Place pawns
         for col in range(Constants.COLS):
-            self.place_piece(Pawn(color='black', position=(1, col)))
-            self.place_piece(Pawn(color='white', position=(6, col)))
+            self.place_piece(Pawn(color='black', position=(1, col),image_path="../pieces-images/black-pawn.png"))
+            self.place_piece(Pawn(color='white', position=(6, col),image_path="../pieces-images/white-pawn.png"))
+
+
+        # testing
+        self.place_piece(Pawn(color='black', position=(5,3),image_path="../pieces-images/black-pawn.png"))
 
         # Place rooks
-        self.place_piece(Rook(color='black', position=(0, 0)))
-        self.place_piece(Rook(color='black', position=(0, 7)))
-        self.place_piece(Rook(color='white', position=(7, 0)))
-        self.place_piece(Rook(color='white', position=(7, 7)))
+        self.place_piece(Rook(color='black', position=(0, 0), image_path="../pieces-images/black-rook.png"))
+        self.place_piece(Rook(color='black', position=(0, 7),image_path="../pieces-images/black-rook.png"))
+        self.place_piece(Rook(color='white', position=(7, 0), image_path="../pieces-images/white-rook.png"))
+        self.place_piece(Rook(color='white', position=(7, 7), image_path="../pieces-images/white-rook.png"))
 
         # Place knights
-        self.place_piece(Knight(color='black', position=(0, 1)))
-        self.place_piece(Knight(color='black', position=(0, 6)))
-        self.place_piece(Knight(color='white', position=(7, 1)))
-        self.place_piece(Knight(color='white', position=(7, 6)))
+        self.place_piece(Knight(color='black', position=(0, 1), image_path="../pieces-images/black-knight.png"))
+        self.place_piece(Knight(color='black', position=(0, 6), image_path="../pieces-images/black-knight.png"))
+        self.place_piece(Knight(color='white', position=(7, 1), image_path="../pieces-images/white-knight.png"))
+        self.place_piece(Knight(color='white', position=(7, 6), image_path="../pieces-images/white-knight.png"))
 
         # Place bishops
-        self.place_piece(Bishop(color='black', position=(0, 2)))
-        self.place_piece(Bishop(color='black', position=(0, 5)))
-        self.place_piece(Bishop(color='white', position=(7, 2)))
-        self.place_piece(Bishop(color='white', position=(7, 5)))
+        self.place_piece(Bishop(color='black', position=(0, 2), image_path="../pieces-images/black-bishop.png"))
+        self.place_piece(Bishop(color='black', position=(0, 5), image_path="../pieces-images/black-bishop.png"))
+        self.place_piece(Bishop(color='white', position=(7, 2), image_path="../pieces-images/white-bishop.png"))
+        self.place_piece(Bishop(color='white', position=(7, 5), image_path="../pieces-images/white-bishop.png"))
 
         # Place queens
-        self.place_piece(Queen(color='black', position=(0, 3)))
-        self.place_piece(Queen(color='white', position=(7, 3)))
+        self.place_piece(Queen(color='black', position=(0, 3), image_path="../pieces-images/black-queen.png"))
+        self.place_piece(Queen(color='white', position=(7, 3), image_path="../pieces-images/white-queen.png"))
 
         # Place kings
-        self.place_piece(King(color='black', position=(0, 4)))
-        self.place_piece(King(color='white', position=(7, 4)))
-
-
-
-    def draw_all_pieces(self, screen, p_images):
-
-        """
-        Draw all the pieces on the board based on the positions on the grid
-        :param screen: Screen to draw on
-        :param p_images: Dictionary of images to draw
-        :return:
-        """
-
-        for (row,col), piece in self.grid.items():
-            piece_type = f"{piece.color}-{piece.__class__.__name__.lower()}"
-            # print(piece_type)
-
-            if piece_type in p_images:
-                piece_img = pygame.transform.scale(p_images[piece_type].convert_alpha(), (Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
-                screen.blit(piece_img, (col * Constants.SQUARE_SIZE, row * Constants.SQUARE_SIZE))
-
-
-
-    def remove_piece(self, position):
-        """
-        Remove a piece from the board notably when captured or promoted
-        :param position:
-        :return:
-        """
-        if position in self.grid:
-            return self.grid.pop(position) # Remove piece in the position provided
-        else:
-            return None
-
+        self.place_piece(King(color='black', position=(0, 4), image_path="../pieces-images/black-king.png"))
+        self.place_piece(King(color='white', position=(7, 4), image_path="../pieces-images/white-king.png"))
 
 
     def make_board(self):
         """
-        Makes board along with pieces
-        :return:
+        Draws the board along with all pieces, except the currently dragged one.
         """
+        colors = [pygame.Color(118, 149, 88), pygame.Color(239, 237, 111)]
 
-        colors = ['white','black']
-        colors[0] = pygame.Color(118,149,88)
-        colors[1] = pygame.Color(239,237,111)
-
-        piece_images = {
-            'white-pawn': pygame.image.load('../pieces-images/white-pawn.png'),
-            'black-pawn': pygame.image.load('../pieces-images/black-pawn.png'),
-            'white-rook': pygame.image.load('../pieces-images/white-rook.png'),
-            'black-rook': pygame.image.load('../pieces-images/black-rook.png'),
-            'white-knight': pygame.image.load('../pieces-images/white-knight.png'),
-            'black-knight': pygame.image.load('../pieces-images/black-knight.png'),
-            'white-bishop': pygame.image.load('../pieces-images/white-bishop.png'),
-            'black-bishop': pygame.image.load('../pieces-images/black-bishop.png'),
-            'white-queen': pygame.image.load('../pieces-images/white-queen.png'),
-            'black-queen': pygame.image.load('../pieces-images/black-queen.png'),
-            'white-king': pygame.image.load('../pieces-images/white-king.png'),
-            'black-king': pygame.image.load('../pieces-images/black-king.png'),
-        }
-
-
-        # assigning colors for the board
+        # Assigning colors for the board
         for row in range(Constants.ROWS):
             for col in range(Constants.COLS):
                 pygame.draw.rect(self.screen,colors[(row+col) % 2],(Constants.SQUARE_SIZE*row,Constants.SQUARE_SIZE*col, Constants.SQUARE_SIZE,Constants.SQUARE_SIZE))
 
-       # Draw pieces
-        self.draw_all_pieces(self.screen,piece_images)
-        # Displays board
+        # Draw all pieces except the one being dragged
+        for (row, col), piece in self.grid.items():
+            # if piece != dragging_piece:  # Skip the dragged piece
+                self.screen.blit(piece.image, (col * Constants.SQUARE_SIZE, row * Constants.SQUARE_SIZE))
+
         pygame.display.flip()
-
-
 
     def play(self):
         """
-        Runs the entire game
+        Runs the game loop with drag-and-drop functionality.
         """
-
         self.initialize_pieces()
         selected_piece = None  # Track the currently selected piece
-        while self.running:
+        dragging = False
+        drag_offset = (0, 0)
+        dragged_piece_image = None  # Stores the image of the dragged piece
+        mouse_x, mouse_y = 0, 0  # Track mouse position
 
+        while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    # Get the position of the mouse click
                     x, y = pygame.mouse.get_pos()
-                    row = y // Constants.SQUARE_SIZE
-                    col = x // Constants.SQUARE_SIZE
+                    row, col = y // Constants.SQUARE_SIZE, x // Constants.SQUARE_SIZE
 
-                    print(row,col)
-
-                    if (row,col) in self.grid:
-                        selected_piece = self.grid[(row,col)]
-
-
-                        ############### DEBUGGING ##############
-                        if isinstance(selected_piece, Pawn):  # Check if the selected piece is a pawn
-
+                    if (row, col) in self.grid:
+                        selected_piece = self.grid[(row, col)]
+                        dragging = True
+                        drag_offset = (
+                            x - col * Constants.SQUARE_SIZE,
+                            y - row * Constants.SQUARE_SIZE
+                        )  # Offset for smooth dragging
+                        dragged_piece_image = selected_piece.image  # Store piece image
+                        # Debugging Info
+                        if isinstance(selected_piece, Pawn):
                             print(f"Pawn at {selected_piece.position} has moved: {selected_piece.has_moved()}")
-                            print(f"Pawn can capture: {selected_piece.can_capture()}")
+                            print(f"Pawn can capture: {selected_piece.can_capture(self)}")
                             print(f"Pawn possible moves: {selected_piece.possible_moves(self)}")
-                        ############### DEBUGGING ##############
-                    print(selected_piece)
 
 
-                    # if selected_piece is None:
-                    #     # Select a piece if one exists at the clicked position
-                    #     if (row, col) in self.grid:
-                    #         selected_piece = self.grid[(row, col)]
-                    # else:
-                    #     # Move the selected piece to the new position
-                    #     if (row, col) in selected_piece.possible_moves(self):
-                    #         self.remove_piece(selected_piece.position)
-                    #         selected_piece.move((row, col), self)
-                    #         self.place_piece(selected_piece)
-                    #     selected_piece = None  # Deselect the piece
+                elif event.type == pygame.MOUSEBUTTONUP and dragging:
+                    x, y = pygame.mouse.get_pos()
+                    new_row, new_col = y // Constants.SQUARE_SIZE, x // Constants.SQUARE_SIZE
+                    new_position = (new_row, new_col)
+
+                    if selected_piece:
+                        try:
+                            captured_piece = self.move_piece(new_position, selected_piece)
+                            if captured_piece:
+                                print(f"{captured_piece} captured at {new_position}")  # Debugging capture event
+                        except ValueError as e:
+                            print(f"Invalid move: {e}")  # Debugging invalid move
+
+                    # Reset dragging state
+                    selected_piece = None
+                    dragging = False
+                    dragged_piece_image = None
+
+                elif event.type == pygame.MOUSEMOTION and dragging:
+                    mouse_x, mouse_y = pygame.mouse.get_pos()  # Track mouse movement
 
             # Redraw the board and pieces
-
-
-
             self.make_board()
-            pygame.display.flip()
 
+            # If dragging, draw the piece at the mouse position
+            if dragging and dragged_piece_image:
+                self.screen.blit(dragged_piece_image, (mouse_x - drag_offset[0], mouse_y - drag_offset[1]))
+
+            pygame.display.flip()
 
 
 if __name__ == "__main__":

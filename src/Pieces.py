@@ -1,12 +1,15 @@
+import pygame
+from constants import  *
 class Piece:
     """
     Base class for all pieces
     """
 
-    def __init__(self,color, position):
+    def __init__(self, color, position, image_path=None):
         self.color = color
         self.position = position # Position of each piece is passed as a tuple (x,y)
-
+        self.image = pygame.image.load(image_path)  # Load the image
+        self.image = pygame.transform.scale(self.image, (Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))  # Resize
 
 
 
@@ -18,7 +21,7 @@ class Piece:
         """
 
 
-    def can_capture(self):
+    def can_capture(self, board):
         """
         If a piece can capture another piece
 
@@ -27,18 +30,7 @@ class Piece:
         """
 
 
-    def move_piece(self, new_position, board):
-        """
-        Method to move a piece from initial coordinate to new_position
-        """
-        if new_position not in self.possible_moves(board):
-            raise ValueError('Invalid move for this piece')
 
-            # Remove the piece from its current position
-        board.remove_piece(self.position)
-
-        self.position = new_position
-        board.place_piece(self)
 
 
     def is_enemy_piece(self, position,color):
@@ -50,14 +42,4 @@ class Piece:
         """
 
 
-    @staticmethod
-    def remove_piece(self,position, board):
-        """
-        Used to remove a piece from its initial position on the board.
-
-        -> Captures of Pieces
-        -> Movement of normal pieces from one position to another
-        """
-
-        return board.grid.pop(position, None)
 
