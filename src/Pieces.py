@@ -30,9 +30,6 @@ class Piece:
         """
 
 
-
-
-
     def is_enemy_piece(self, position,color):
         """
         Checks if a piece at the given position is an enemy piece.

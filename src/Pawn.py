@@ -22,8 +22,6 @@ class Pawn(Piece):
         Checks all the forward diagonals of the piece
         """
         capture_positions = []
-
-
         x,y = self.position
         forward = -1 if self.color == 'white' else 1
 
@@ -47,6 +45,7 @@ class Pawn(Piece):
         Includes a list of normal moves and capture moves
         :return: List of possible moves
         """
+
         moves = []  # List of moves that pawn can make
         x, y = self.position
 
@@ -71,11 +70,11 @@ class Pawn(Piece):
                 moves.append(diagonal)
         return moves
 
-    # check for enpassant
 
+    # check for enpassant
     def check_enpassant(self):
         """
-        Initial enpassant manoeuvre of Pawn for enpassnat checkingk
+        Initial enpassant manoeuvre of Pawn for enpassant checking
         :return:
         """
 
