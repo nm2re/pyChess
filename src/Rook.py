@@ -1,4 +1,3 @@
-
 from Pieces import Piece
 from constants import *
 class Rook(Piece):
@@ -55,39 +54,14 @@ class Rook(Piece):
                 new_y += dy
         return moves
 
-
-    # def can_capture(self, board):
-    #     """
-    #     Encompasses all the pieces that the rook can capture
-    #     :param board:
-    #     :return:
-    #     """
-    #
-    #     capture_positions = []
-    #
-    #     x,y = self.position
-    #
-    #     directions = [
-    #         (1, 0), (-1, 0), (0, 1), (0, -1)
-    #     ]
-    #
-    #     for dx, dy in directions:
-    #         new_x, new_y = x + dx, y + dy
-    #         while 0 <= new_x < Constants.ROWS and 0 <= new_y < Constants.COLS:
-    #             if (new_x, new_y) in board.grid and board.grid[(new_x, new_y)].color != self.color:
-    #                 capture_positions.append((new_x, new_y))
-    #                 break # Stop after one
-    #
-    #             new_x += dx
-    #             new_y += dy
-    #     # check if opponent piece in
-    #     return capture_positions
-
     def can_capture(self, board):
         """
         Returns a list of enemy pieces that the Rook can capture.
         The Rook can capture an opponent piece if it is directly in its path
         (horizontally or vertically) without a friendly piece blocking it.
+
+        :param board:
+        :return:
         """
 
         capture_moves = []

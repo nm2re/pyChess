@@ -29,14 +29,14 @@ class Piece:
         :return:
         """
 
-
-    def is_enemy_piece(self, position,color):
-        """
-        Checks if a piece at the given position is an enemy piece.
-        :param position: Tuple (x, y) - The position to check.
-        :param color: The color of the current piece ('white' or 'black').
-        :return: True if the position contains an enemy piece, False otherwise.
-        """
-
+    #
+    # def is_enemy_piece(self, position,color):
+    #     """
+    #     Checks if a piece at the given position is an enemy piece.
+    #     :param position: Tuple (x, y) - The position to check.
+    #     :param color: The color of the current piece ('white' or 'black').
+    #     :return: True if the position contains an enemy piece, False otherwise.
+    #     """
+    #
 
 

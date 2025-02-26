@@ -139,30 +139,32 @@ class Board:
                     if (row, col) in self.grid:
                         selected_piece = self.grid[(row, col)]
                         dragging = True
-                        drag_offset = (x - col * Constants.SQUARE_SIZE,y - row * Constants.SQUARE_SIZE)  # Offset for smooth dragging
-                        dragged_piece_image = selected_piece.image  # Store piece image
+                        drag_offset = (
+                        x - col * Constants.SQUARE_SIZE, y - row * Constants.SQUARE_SIZE)  # Offset for smooth dragging
+
+                        # Load the image correctly
+                        piece_type = f"{selected_piece.color}-{selected_piece.__class__.__name__.lower()}"
+                        dragged_piece_image = selected_piece.image
+
                         # Debugging Info
-                        if isinstance(selected_piece, Pawn):
-                            print(f"Pawn at {selected_piece.position} has moved: {selected_piece.has_moved()}")
-                            print(f"Pawn can capture: {selected_piece.can_capture(self)}")
-                            print(f"Pawn possible moves: {selected_piece.possible_moves(self)}")
+                        print(f"{selected_piece.__class__.__name__} selected at {selected_piece.position}")
+                        print(f"Possible moves: {selected_piece.possible_moves(self)}")
+                        print(f"Can capture: {selected_piece.can_capture(self)}")
 
-                        if isinstance(selected_piece, Rook):
-                            print(f"Rook at {selected_piece.position} has moved: {selected_piece.has_moved()}")
-                            print(f"Rook can capture: {selected_piece.can_capture(self)}")
-                            print(f"Rook possible moves: {selected_piece.possible_moves(self)}")
-
+                        # self.make_board()
+                        # pygame.display.flip()
 
                 elif event.type == pygame.MOUSEBUTTONUP and dragging:
                     x, y = pygame.mouse.get_pos()
                     new_row, new_col = y // Constants.SQUARE_SIZE, x // Constants.SQUARE_SIZE
                     new_position = (new_row, new_col)
 
-                    if selected_piece:
+                    if selected_piece and (
+                            new_position != selected_piece.position):  # Prevents dropping at the same place
                         try:
                             captured_piece = self.move_piece(new_position, selected_piece)
                             if captured_piece:
-                                print(f"{captured_piece} captured at {new_position}")  # Debugging capture event
+                                print(f"{captured_piece} captured at {new_position} by {selected_piece.__class__.__name__}")  # Debugging capture event
                         except ValueError as e:
                             print(f"Invalid move: {e}")  # Debugging invalid move
 
@@ -171,17 +173,18 @@ class Board:
                     dragging = False
                     dragged_piece_image = None
 
+
                 elif event.type == pygame.MOUSEMOTION and dragging:
                     mouse_x, mouse_y = pygame.mouse.get_pos()  # Track mouse movement
 
             # Redraw the board and pieces
             self.make_board()
 
+
+            # Draw the dragged piece following the mouse cursor
             if dragging and dragged_piece_image:
                 self.screen.blit(dragged_piece_image, (mouse_x - drag_offset[0], mouse_y - drag_offset[1]))
-
             pygame.display.flip()
-
 
 if __name__ == "__main__":
     renderBoard = Board()
