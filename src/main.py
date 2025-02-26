@@ -7,17 +7,18 @@ from Knight import Knight
 from Queen import Queen
 from King import King
 
-
 class Board:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((Constants.SIZE, Constants.SIZE))
+        pygame.display.set_caption("Chess - White's Turn")
         self.clock = pygame.time.Clock()
         self.running = True
         self.dt = 0
 
         self.grid = {}  # Dictionary to store pieces on the board (position -> piece)
-
+        self.current_turn = 'white'  # White starts first
+        self.move_made = False  # Track if a move was made
 
     def place_piece(self, piece):
         """
@@ -27,7 +28,6 @@ class Board:
         if piece.position in self.grid:
             raise ValueError(f"Piece {piece.position} already placed")
         self.grid[piece.position] = piece
-
 
     def remove_piece(self, position):
         """
@@ -52,7 +52,18 @@ class Board:
         piece.position = new_position
         self.place_piece(piece)
 
+        # Move was successful, so toggle the turn
+        self.move_made = True
+
         return captured_piece  # Return captured piece (if any)
+
+    def toggle_turn(self):
+        """
+        Switch the current turn between white and black.
+        """
+
+        self.current_turn = 'black' if self.current_turn == 'white' else 'white'
+        pygame.display.set_caption(f"Chess - {self.current_turn.capitalize()}'s Turn")
 
     def initialize_pieces(self):
         """
@@ -63,8 +74,8 @@ class Board:
             self.place_piece(Pawn(color='black', position=(1, col), image_path="../pieces-images/black-pawn.png"))
             self.place_piece(Pawn(color='white', position=(6, col), image_path="../pieces-images/white-pawn.png"))
 
-        # testing
-        self.place_piece(Pawn(color='black', position=(5, 3), image_path="../pieces-images/black-pawn.png"))
+        # Testing pawn
+        # self.place_piece(Pawn(color='black', position=(5, 3), image_path="../pieces-images/black-pawn.png"))
 
         # Place rooks
         self.place_piece(Rook(color='black', position=(0, 0), image_path="../pieces-images/black-rook.png"))
@@ -92,11 +103,11 @@ class Board:
         self.place_piece(King(color='black', position=(0, 4), image_path="../pieces-images/black-king.png"))
         self.place_piece(King(color='white', position=(7, 4), image_path="../pieces-images/white-king.png"))
 
-
     def draw_board(self):
         """
         Draws just the chess board squares without any pieces.
         """
+
         colors = [pygame.Color(118, 149, 88), pygame.Color(239, 237, 111)]
 
         # Assigning colors for the board
@@ -110,13 +121,14 @@ class Board:
         """
         Draws all pieces except the specified one.
         """
+
         for (row, col), piece in self.grid.items():
             if piece != exclude_piece:  # Skip the excluded piece
                 self.screen.blit(piece.image, (col * Constants.SQUARE_SIZE, row * Constants.SQUARE_SIZE))
 
     def play(self):
         """
-        Runs the game loop with drag-and-drop functionality.
+        Runs the game loop with drag-and-drop functionality and turn-based play.
         """
 
         self.initialize_pieces()
@@ -142,22 +154,23 @@ class Board:
                         dragged_piece_image = None
 
                     if (row, col) in self.grid:
-                        selected_piece = self.grid[(row, col)]
-                        dragging = True
-                        drag_offset = (
-                            x - col * Constants.SQUARE_SIZE, y - row * Constants.SQUARE_SIZE
-                        )  # Offset for smooth dragging
+                        piece = self.grid[(row, col)]
 
-                        # Load the image correctly
-                        piece_type = f"{selected_piece.color}-{selected_piece.__class__.__name__.lower()}"
-                        dragged_piece_image = pygame.transform.scale(
-                            selected_piece.image, (Constants.SQUARE_SIZE, Constants.SQUARE_SIZE)
-                        )
+                        # Only allow selecting pieces of the current turn's color
+                        if piece.color == self.current_turn:
+                            selected_piece = piece
+                            dragging = True
+                            drag_offset = (x - col * Constants.SQUARE_SIZE, y - row * Constants.SQUARE_SIZE)  # Offset for smooth dragging
 
-                        # Debugging Info
-                        print(f"{selected_piece.__class__.__name__} selected at {selected_piece.position}")
-                        print(f"Possible moves: {selected_piece.possible_moves(self)}")
-                        print(f"Can capture: {selected_piece.can_capture(self)}")
+                            # Load the image correctly
+                            dragged_piece_image = pygame.transform.scale(selected_piece.image, (Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
+
+                            # Debugging Info
+                            print(f"{selected_piece.__class__.__name__} selected at {selected_piece.position}")
+                            print(f"Possible moves: {selected_piece.possible_moves(self)}")
+                            print(f"Can capture: {selected_piece.can_capture(self)}")
+                        else:
+                            print(f"Not your turn! Current turn: {self.current_turn}")
 
                 elif event.type == pygame.MOUSEBUTTONUP and dragging:
                     x, y = pygame.mouse.get_pos()
@@ -166,13 +179,19 @@ class Board:
 
                     if selected_piece and new_position != selected_piece.position:
                         try:
+                            self.move_made = False  # Reset move flag
                             captured_piece = self.move_piece(new_position, selected_piece)
+
                             if captured_piece:
-                                print(
-                                    f"{captured_piece} captured at {new_position} by {selected_piece.__class__.__name__}"
-                                )  # Debugging capture event
+                                print(f"{captured_piece} captured at {new_position} by {selected_piece.__class__.__name__}")
+
+                            # If move was successful, toggle the turn
+                            if self.move_made:
+                                self.toggle_turn()
+                                print(f"Turn changed to {self.current_turn}")
+
                         except ValueError as e:
-                            print(f"Invalid move: {e}")  # Debugging invalid move
+                            print(f"Invalid move: {e}")
 
                     # Reset dragging state
                     selected_piece = None
@@ -184,8 +203,6 @@ class Board:
 
             # Set a consistent frame rate to avoid flickering
             self.clock.tick(60)
-
-            # Draw board and pieces
             self.draw_board()  # Just draw the board squares
 
             if dragging and selected_piece:
@@ -197,7 +214,6 @@ class Board:
             else:
                 # Draw all pieces when not dragging
                 self.draw_pieces()
-
             pygame.display.update()
 
 

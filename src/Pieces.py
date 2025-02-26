@@ -1,5 +1,6 @@
 import pygame
 from constants import  *
+
 class Piece:
     """
     Base class for all pieces
@@ -16,16 +17,14 @@ class Piece:
     def possible_moves(self,board):
         """
          -- Class to be inherited by the individual pieces --
-
         Where the piece can move preferably a list
         """
 
 
     def can_capture(self, board):
         """
-        If a piece can capture another piece
-
-        Class to be inherited by the individual pieces
+        -- Class to be inherited by the individual pieces --
+        Returns a list of pieces that can be captured by this piece
         :return:
         """
 
