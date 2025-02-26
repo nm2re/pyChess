@@ -1,4 +1,5 @@
 from Pieces import Piece
+from constants import *
 
 class Bishop(Piece):
     def __init__(self, color, position, image_path):
@@ -19,10 +20,28 @@ class Bishop(Piece):
 
         # directions will only be the 4 diagonals
 
+        directions = [
+            (-1, -1), # top left
+            (-1, 1),# top right
+            (1, -1),# bottom left
+            (1, 1)# bottom right
+        ]
+
+        for dx,dy in directions:
+            current_x, current_y = x + dx, y + dy
+
+            while 0 < current_x < Constants.ROWS and 0 < current_y < Constants.COLS:
+                if (current_x, current_y) in board.grid:
+                    piece = board.grid[(current_x, current_y)]
+
+                    if piece.color != self.color:
+                        moves.append((current_x, current_y))
+                    break
+
+                moves.append((current_x, current_y))
+                current_x, current_y = current_x + dx, current_y + dy
 
         return moves
-
-
 
 
     def can_capture(self, board):
@@ -31,6 +50,29 @@ class Bishop(Piece):
         :param board:
         :return:
         """
-        pass
+        capture_moves = []
+
+        x,y = self.position
+        directions = [
+            (-1, -1),  # top left
+            (-1, 1),  # top right
+            (1, -1),  # bottom left
+            (1, 1)  # bottom right
+        ]
+
+        for dx,dy in directions:
+            current_x,current_y = x + dx, y + dy
+
+            while 0 < current_x < Constants.ROWS and 0 < current_y < Constants.COLS:
+                if (current_x, current_y) in board.grid: # If theres a piece on the baord
+                    piece = board.grid[(current_x, current_y)]
+
+                    if piece.color != self.color:
+                        capture_moves.append((current_x, current_y))
+
+                    break
+                current_x, current_y = current_x + dx, current_y + dy
+
+        return capture_moves
 
 
