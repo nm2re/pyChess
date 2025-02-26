@@ -113,9 +113,7 @@ class Board:
         # Assigning colors for the board
         for row in range(Constants.ROWS):
             for col in range(Constants.COLS):
-                pygame.draw.rect(self.screen, colors[(row + col) % 2],
-                                 (col * Constants.SQUARE_SIZE, row * Constants.SQUARE_SIZE,
-                                  Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
+                pygame.draw.rect(self.screen, colors[(row + col) % 2],(col * Constants.SQUARE_SIZE, row * Constants.SQUARE_SIZE,Constants.SQUARE_SIZE, Constants.SQUARE_SIZE))
 
     def draw_pieces(self, exclude_piece=None):
         """

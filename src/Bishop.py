@@ -63,8 +63,8 @@ class Bishop(Piece):
         for dx,dy in directions:
             current_x,current_y = x + dx, y + dy
 
-            while 0 < current_x < Constants.ROWS and 0 < current_y < Constants.COLS:
-                if (current_x, current_y) in board.grid: # If theres a piece on the baord
+            while 0 <= current_x < Constants.ROWS and 0 < current_y < Constants.COLS:
+                if (current_x, current_y) in board.grid: # If theres a piece on the board
                     piece = board.grid[(current_x, current_y)]
 
                     if piece.color != self.color:
