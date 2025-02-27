@@ -123,6 +123,35 @@ class Board:
             if piece != exclude_piece:  # Skip the excluded piece
                 self.screen.blit(piece.image, (col * Constants.SQUARE_SIZE, row * Constants.SQUARE_SIZE))
 
+    def draw_move_indicators(self, piece):
+        """
+        Draws indicators (dots) for all possible moves of the selected piece.
+        """
+        if not piece:
+            return
+
+        if isinstance(piece, King):
+            basic_moves = piece.get_basic_moves(self)
+        else:
+            basic_moves = piece.possible_moves(self)
+        valid_moves = [move for move in basic_moves if not self.move_will_put_king_in_check(piece, move)]
+
+        for row, col in valid_moves:
+            center_x = col * Constants.SQUARE_SIZE + Constants.SQUARE_SIZE // 2
+            center_y = row * Constants.SQUARE_SIZE + Constants.SQUARE_SIZE // 2
+
+            indicator_radius = Constants.SQUARE_SIZE // 6
+            dot_surface = pygame.Surface((indicator_radius * 2, indicator_radius * 2), pygame.SRCALPHA)
+
+            if (row, col) in self.grid:
+                pygame.draw.circle(dot_surface, (255, 0, 0, 160), (indicator_radius, indicator_radius),
+                                   indicator_radius)
+            else:
+                pygame.draw.circle(dot_surface, (128, 128, 128, 160), (indicator_radius, indicator_radius),
+                                   indicator_radius)
+            self.screen.blit(dot_surface, (center_x - indicator_radius, center_y - indicator_radius))
+
+
     ###### KING CONDITIONS #############
 
     def get_king(self, color):
@@ -138,7 +167,6 @@ class Board:
         print(f"Current pieces: {[(p.color, p.__class__.__name__, p.position) for p in self.grid.values()]}")
 
         # Create a dummy king off the board to prevent NoneType errors
-        # This should only happen in error conditions
         dummy_king = King(color=color, position=(-1, -1), image_path=f"../pieces-images/{color}-king.png")
         return dummy_king
 
@@ -346,7 +374,10 @@ class Board:
             self.clock.tick(60)
             self.draw_board()  # Just draw the board squares
 
+            # Draw move indicators if a piece is selected
             if dragging and selected_piece:
+                # Draw move indicators before pieces to make them appear behind
+                self.draw_move_indicators(selected_piece)
                 self.draw_pieces(exclude_piece=selected_piece)  # Draw all pieces except the dragged one
                 self.screen.blit(dragged_piece_image,
                                  (mouse_x - drag_offset[0], mouse_y - drag_offset[1]))  # Draw dragged piece
